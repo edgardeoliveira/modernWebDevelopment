@@ -18,7 +18,7 @@ export default function RolesPage() {
 
     const [title, setTitle] = React.useState('Nova Role')
 
-
+    const [idroles, setId] = React.useState(0)
     const [name, setName] = React.useState("");
     const [description, setDescription] = React.useState("");
 
@@ -26,6 +26,34 @@ export default function RolesPage() {
         const user = authService.getLoggedUser()
         if (!user) router.replace('/login')
     } , [])
+
+
+    React.useEffect(() => {
+        if (params && params.idroles) {
+            if (Number(params.idroles) > 0) {
+                setTitle('Edição da Roles')
+                setId(Number(params.idroles))
+            }
+        }
+    }, [params])
+
+    React.useEffect(() => {
+        if (idroles > 0) {
+            rolesService.get(idroles).then(roles => {
+                setName(roles.name)
+                setDescription(roles.description)
+            }).catch(treat)
+        }
+    }, [idroles])
+
+    function treat(error: any) {
+        if (authService.isUnauthorized(error)) {
+            router.replace('/login')
+        } else {
+            alert(`${name}: ${error.message}`)
+        }
+    }
+
 
     
     async function saveRole() {

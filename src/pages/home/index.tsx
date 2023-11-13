@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { User } from '@/model/user';
 import { Roles } from '@/model/roles';
 import { userService } from '@/services/user.service';
+import { rolesService } from '@/services/role.service';
 import UserList from '@/components/user-list';
 import { authService } from '@/services/auth.service';
 import RolesList from '@/components/role-list';
@@ -17,6 +18,7 @@ export default function HomePage() {
 
     useEffect(() => {
         fetchUsers();
+        fetchRoles();
     }, []);
 
     // Função para buscar a lista de usuários
@@ -25,6 +27,15 @@ export default function HomePage() {
             .then((list) => setUsers(list))
             .catch(treat);
     }
+
+
+    // Função para buscar a lista de roles
+    function fetchRoles() {
+            rolesService.getList()
+                .then((listR) => setRoles(listR))
+                .catch(treat);
+    }
+
 
     // Função para lidar com erros
     function treat(error: any) {
@@ -44,6 +55,18 @@ export default function HomePage() {
     function remove(id: number) {
         userService.remove(id)
             .then((removed) => fetchUsers())
+            .catch(treat);
+    }
+
+      // Função para editar uma Roles
+      function editroles(id: number) {
+        router.push(`/roles/${id}`);
+    }
+
+    // Função para remover um Roles
+    function removeroles(id: number) {
+        rolesService.remove(id)
+            .then((removed) => fetchRoles())
             .catch(treat);
     }
 
@@ -83,7 +106,7 @@ export default function HomePage() {
                 </div>
                 <h3>Listagem de Roles</h3>
                 <div className={styles.homeMain}>
-                    <RolesList roles ={roles} edit={edit} remove={remove} />
+                    <RolesList roles ={roles} edit={editroles} remove={removeroles} />
                 </div>
             </main>
         </>

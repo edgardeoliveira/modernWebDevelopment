@@ -8,6 +8,7 @@ import styles from './styles.module.css'
 import { userService } from '@/services/user.service'
 import { authService } from '@/services/auth.service'
 import { User } from '@/model/user'
+import { rolesService } from '@/services/role.service'
 
 export default function UserPage() {
 
@@ -21,6 +22,8 @@ export default function UserPage() {
     const [username, setUsername] = React.useState('')
     const [password, setPassword] = React.useState('')
     const [passConfirm, setPassConfirm] = React.useState('')
+    const [roles, setRoles] = React.useState([]);
+    const [selectedRole, setSelectedRole] = React.useState('');
 
     React.useEffect(() => {
         const user = authService.getLoggedUser()
@@ -44,6 +47,8 @@ export default function UserPage() {
             }).catch(treat)
         }
     }, [id])
+
+
 
     function treat(error: any) {
         if (authService.isUnauthorized(error)) {
@@ -122,6 +127,11 @@ export default function UserPage() {
                         label='Confirmar Senha'
                         type='password'
                         onChange={event => setPassConfirm(event.target.value)}
+                    />
+                     <MyInput
+                        label='Role'
+                        value={name}
+                        onChange={event => setName(event.target.value)} // Lidar com as alterações no campo box
                     />
                 </div>
 
